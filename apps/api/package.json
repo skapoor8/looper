@@ -1,0 +1,13 @@
+{
+  "name": "@gcloud-function-api-auth/api",
+  "version": "0.0.1",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node dist/main",
+    "start:prod": "node dist/main",
+    "start:azure": "func host start"
+  },
+  "dependencies": {
+    "@google-cloud/functions-framework": "^3.1.3"
+  }
+}

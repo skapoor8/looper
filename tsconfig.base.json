@@ -1,0 +1,25 @@
+{
+  "compileOnSave": true,
+  "compilerOptions": {
+    "rootDir": ".",
+    "sourceMap": true,
+    "declaration": false,
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "strictPropertyInitialization": false,
+    "importHelpers": true,
+    "target": "es2015",
+    "module": "esnext",
+    "lib": ["es2017", "dom"],
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "@gcloud-function-api-auth/db": ["libs/db/src/index.ts"],
+      "@gcloud-function-api-auth/interfaces": ["libs/interfaces/src/index.ts"],
+      "@gcloud-function-api-auth/models": ["libs/models/src/index.ts"]
+    }
+  },
+  "exclude": ["tmp"]
+}

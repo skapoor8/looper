@@ -1,0 +1,28 @@
+{
+  "name": "@gcloud-function-api-auth/db",
+  "version": "0.0.1",
+  "type": "commonjs",
+  "scripts": {
+    "setup-mikro-orm": "npm i -s @mikro-orm/core @mikro-orm/mysql",
+    "build": "run-p build:*",
+    "build:main": "tsc -p tsconfig.json",
+    "build:module": "tsc -p tsconfig.module.json",
+    "db:create": "npx mikro-orm migration:up",
+    "db:destroy": "npx mikro-orm migration:down --to 0",
+    "db:seed": " npx mikro-orm seeder:run",
+    "db:migration:initial": "npx mikro-orm migration:create --initial",
+    "db:migration:create": "npx mikro-orm migration:create",
+    "db:migration:up": "npx mikro-orm migration:up",
+    "db:migration:down": "npx mikro-orm migration:down",
+    "db:migration:list": "npx mikro-orm migration:list",
+    "db:export": "./scripts/export.sh",
+    "db:import": "./scripts/import.sh"
+  },
+  "dependencies": {
+    "@mikro-orm/cli": "^5.6.0",
+    "ts-node": "^10.9.1"
+  },
+  "mikro-orm": {
+    "useTsNode": true
+  }
+}

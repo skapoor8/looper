@@ -1,0 +1,99 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/gcip-helper/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/node:webpack",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/apps/gcip-helper",
+        "main": "apps/gcip-helper/src/main.ts",
+        "tsConfig": "apps/gcip-helper/tsconfig.app.json",
+        "assets": ["apps/gcip-helper/src/assets"],
+        "externalDependencies": "all",
+        "outputFileName": "index.js",
+        "generatePackageJson": true
+      },
+      "configurations": {
+        "production": {
+          "optimization": true,
+          "extractLicenses": true,
+          "inspect": false,
+          "fileReplacements": [
+            {
+              "replace": "apps/gcip-helper/src/environments/environment.ts",
+              "with": "apps/gcip-helper/src/environments/environment.prod.ts"
+            }
+          ]
+        },
+        "development": {
+          "inspect": true
+        }
+      }
+    },
+    "serve": {
+      "executor": "@nrwl/node:node",
+      "options": {
+        "buildTarget": "gcip-helper:build"
+      },
+      "configurations": {
+        "production": {
+          "buildTarget": "gcip-helper:build:production"
+        }
+      }
+    },
+    "serve-before-create": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "npx nx run gcip-helper:build --development && npx functions-framework --source=dist/apps/gcip-helper --target=beforeCreate"
+        ]
+      }
+    },
+    "serve-before-login": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "npx nx run gcip-helper:build && npx functions-framework --source=dist/apps/gcip-helper --target=beforeSignIn"
+        ]
+      }
+    },
+    "deploy-before-create": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "commands": [
+          "gcloud functions deploy gcip-before-create-helper --region us-east1 --runtime nodejs16 --trigger-http --entry-point beforeCreate --source ./dist/apps/gcip-helper --allow-unauthenticated --project looper-374421 --env-vars-file=apps/api/src/environments/.env.prod.yaml"
+        ],
+        "color": true,
+        "parallel": false
+      }
+    },
+    "deploy-before-login": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "commands": [
+          "gcloud functions deploy gcip-before-login-helper --region us-east1 --runtime nodejs16 --trigger-http --entry-point beforeSignIn --source ./dist/apps/gcip-helper --allow-unauthenticated --project looper-374421 --env-vars-file=apps/api/src/environments/.env.prod.yaml"
+        ],
+        "color": true,
+        "parallel": false
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/gcip-helper/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/apps/gcip-helper"],
+      "options": {
+        "jestConfig": "apps/gcip-helper/jest.config.ts",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": []
+}

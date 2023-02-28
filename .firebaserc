@@ -1,0 +1,14 @@
+{
+  "targets": {
+    "looper-374421": {
+      "hosting": {
+        "client": [
+          "looper-374421"
+        ]
+      }
+    }
+  },
+  "projects": {
+    "default": "looper-374421"
+  }
+}

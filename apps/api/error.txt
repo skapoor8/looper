@@ -1,0 +1,37 @@
+{
+  "textPayload": "The request failed because either the HTTP response was malformed or connection to the instance had an error. Additional troubleshooting documentation can be found at: https://cloud.google.com/run/docs/troubleshooting#malformed-response-or-connection-error",
+  "insertId": "63c0099f000e9670cf750a01",
+  "httpRequest": {
+    "requestMethod": "GET",
+    "requestUrl": "https://func-looper-xbr2k3vaja-uc.a.run.app/",
+    "requestSize": "424",
+    "status": 503,
+    "responseSize": "954",
+    "userAgent": "PostmanRuntime/7.29.2",
+    "remoteIp": "73.218.55.142",
+    "serverIp": "216.239.38.53",
+    "latency": "1.274038368s",
+    "protocol": "HTTP/1.1"
+  },
+  "resource": {
+    "type": "cloud_run_revision",
+    "labels": {
+      "location": "us-central1",
+      "revision_name": "func-looper-00005-nak",
+      "configuration_name": "func-looper",
+      "project_id": "looper-374421",
+      "service_name": "func-looper"
+    }
+  },
+  "timestamp": "2023-01-12T13:22:39.956016Z",
+  "severity": "ERROR",
+  "labels": {
+    "instanceId": "0071bb4815d8b545ec9d46927c2f33e9a71025214c0b8fad13f5ad482f2e19c687f5e0ac2550f1d814eb0463564ced803aec21b295e2caebd88a935ce1c49f408dd1",
+    "goog-managed-by": "cloudfunctions"
+  },
+  "logName": "projects/looper-374421/logs/run.googleapis.com%2Frequests",
+  "trace": "projects/looper-374421/traces/09cc38d6c9239cfad704fce2f7837f3f",
+  "receiveTimestamp": "2023-01-12T13:22:39.962682847Z",
+  "spanId": "4462882392864764012",
+  "traceSampled": true
+}
