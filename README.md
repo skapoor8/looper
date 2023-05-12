@@ -1,5 +1,10 @@
 # AzureFunctionApiMysqlTypeorm
 
+## Todo
+
+1. Fix routing
+2. Fix data loading based on permissions
+
 ## Using NX
 
 1. creating workspace X

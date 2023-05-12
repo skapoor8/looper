@@ -1,6 +1,7 @@
+import { DomainServiceLoadableStatus } from './domain-services/enums';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { catchError, filter, Subscription, throwError } from 'rxjs';
+import { catchError, filter, map, Subscription, throwError, take } from 'rxjs';
 import { UsersDomainService } from './domain-services';
 import { ElistsDomainService } from './domain-services/services/elists.domain-service';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
@@ -11,11 +12,15 @@ import { UserRole } from '@gcloud-function-api-auth/interfaces';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
   host: {
-    class: 'flex flex-col h-screen bg-slate-100',
+    class: 'flex flex-col h-screen bg-slate-100 overflow-y-hidden',
   },
 })
 export class AppComponent implements OnInit, OnDestroy {
   public user$ = this._auth.user;
+  public loadComplete$ = this._usersDomainService.user$.pipe(
+    map((l) => l.status === DomainServiceLoadableStatus.COMPLETE)
+  );
+  public elists$ = this._elistDomainService.userElists$;
   title = 'client';
   subs: Subscription[] = [];
 
@@ -32,10 +37,8 @@ export class AppComponent implements OnInit, OnDestroy {
     this.subs.push(
       this._auth.authState.subscribe({
         next: async (s) => {
-          console.log('auth state changed:', s);
           if (s) {
             const token = await s?.getIdTokenResult();
-            console.log('token:', token);
             this._usersDomainService
               .load(
                 token?.claims['looper_user_role'] === UserRole.ADMIN,
@@ -48,8 +51,8 @@ export class AppComponent implements OnInit, OnDestroy {
       this._usersDomainService.user$
         .pipe(filter((u) => !!u?.data))
         .subscribe(() => {
-          this._elistDomainService.load().subscribe();
-          this._router.navigate(['elists']);
+          // this._elistDomainService.load().subscribe();
+          // this._router.navigate(['elists']);
         })
     );
   }

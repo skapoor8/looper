@@ -54,7 +54,6 @@ export class UserController {
   @Role(UserRole.ADMIN)
   @Post()
   public async create(@Body() body: Omit<IUser, 'id'>) {
-    console.log('body:', body);
     try {
       await this.userService.createOne(body);
     } catch (e) {
@@ -65,8 +64,6 @@ export class UserController {
 
   @Put('/:id')
   public async update(@Param('id') id: string, @Body() body: IUser) {
-    console.log('body:', body);
-
     if (id !== body.id) {
       throw new BadRequestException('id in request body does not match route');
     }

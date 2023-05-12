@@ -37,13 +37,11 @@ export class AuthGuard implements CanActivate {
     if (isPublic) {
       return true;
     } else if (authStatus?.authSuccess) {
-      console.log('user:', authStatus);
       if (role === UserRole.ADMIN && authStatus.userRole !== UserRole.ADMIN) {
         throw new UnauthorizedException('Insufficient Permissions');
       }
       return true;
     } else if (looperApiKey) {
-      console.log('looperApiKey:', looperApiKey);
       if (this._config.get('LOOPER_API_KEY') === looperApiKey) {
         return true;
       } else {

@@ -15,6 +15,10 @@ export class ElistsHttpService {
     return this._http.post<IElist>('elists', anElist);
   }
 
+  public getElistById(id: string) {
+    return this._http.get<IElist>(`elists/${id}`);
+  }
+
   public getElists() {
     return this._http.get<IElistWithOwnerInfoDTO[]>('elists');
   }

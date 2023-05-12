@@ -7,6 +7,7 @@ export class UsersPresenter {
   // state -------------------------------------------------------------------------------------------------------------
   public users$ = this._usersDomainService.users$;
   public user$ = this._usersDomainService.user$;
+  public isAdmin$ = this._usersDomainService.isAdmin$;
   public authUser$ = this._usersDomainService.authUser$;
 
   // lifecycle ---------------------------------------------------------------------------------------------------------

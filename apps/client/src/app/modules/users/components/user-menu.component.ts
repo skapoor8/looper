@@ -1,4 +1,5 @@
-import { RouterModule } from '@angular/router';
+import { MatIconModule } from '@angular/material/icon';
+import { Router, RouterModule } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
 import { CommonModule } from '@angular/common';
@@ -7,7 +8,6 @@ import { MatSelectModule } from '@angular/material/select';
 import { IUser } from '@gcloud-function-api-auth/interfaces';
 import { catchError, throwError } from 'rxjs';
 import { UsersDomainService } from '../../../domain-services';
-import { DomainServicesModule } from '../../../domain-services';
 import { UsersPresenter } from '../presenters/users.presenter';
 
 @Component({
@@ -15,7 +15,7 @@ import { UsersPresenter } from '../presenters/users.presenter';
   imports: [
     MatMenuModule,
     MatButtonModule,
-    DomainServicesModule,
+    MatIconModule,
     CommonModule,
     RouterModule,
   ],
@@ -23,9 +23,18 @@ import { UsersPresenter } from '../presenters/users.presenter';
   selector: 'looper-user-menu',
   template: `
     <ng-container *ngIf="authUser$ | async">
-      <button mat-button [matMenuTriggerFor]="menu">Menu</button>
+      <button
+        mat-icon-button
+        color="primary"
+        class="hover:bg-matDeepPurple-400"
+        [matMenuTriggerFor]="menu"
+      >
+        <mat-icon class="text-white">person</mat-icon>
+      </button>
       <mat-menu #menu>
-        <button mat-menu-item routerLink="/account">Account</button>
+        <button *ngIf="isAdmin$ | async" mat-menu-item routerLink="/account">
+          Account
+        </button>
         <button mat-menu-item (click)="handleLogout()">Logout</button>
       </mat-menu>
     </ng-container>
@@ -34,15 +43,17 @@ import { UsersPresenter } from '../presenters/users.presenter';
 export class UserMenuComponent {
   // state -------------------------------------------------------------------------------------------------------------
   public authUser$ = this._presenter.authUser$;
+  public isAdmin$ = this._presenter.isAdmin$;
 
   // lifecycle ---------------------------------------------------------------------------------------------------------
-  constructor(private _presenter: UsersPresenter) {}
+  constructor(private _presenter: UsersPresenter, private _router: Router) {}
 
   // api ---------------------------------------------------------------------------------------------------------------
 
   // event handlers ----------------------------------------------------------------------------------------------------
 
-  public handleLogout() {
-    this._presenter.signOut();
+  public async handleLogout() {
+    await this._presenter.signOut();
+    this._router.navigateByUrl('/login');
   }
 }

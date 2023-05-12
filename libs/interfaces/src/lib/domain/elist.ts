@@ -1,7 +1,8 @@
+import { IElistPreference } from './elist-preference';
 export interface IElist {
   id: string;
   elistName: string;
-  settings?: object;
+  settings?: IElistPreference[];
   defaultSettings?: object;
   ownerId: string;
 }

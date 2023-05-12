@@ -12,7 +12,6 @@ export class AuthMiddleware implements NestMiddleware {
 
   async use(req: Request, res: Response, next: NextFunction) {
     const looperApiKey = req.headers['X-Looper-Api-Key'.toLowerCase()];
-    console.log('apiKey:', looperApiKey, req.headers);
 
     if (looperApiKey) {
       req['looperApiKey'] = looperApiKey;
@@ -22,7 +21,6 @@ export class AuthMiddleware implements NestMiddleware {
         const authState = await this._authService.validateUser(
           token?.replace('Bearer ', '') ?? ''
         );
-        console.log('AuthState:', authState);
         req['auth'] = authState;
       } catch (e) {
         console.error(e);

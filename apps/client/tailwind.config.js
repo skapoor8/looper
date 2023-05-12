@@ -6,6 +6,7 @@ module.exports = {
     extend: {},
     customColorPalette: {
       colors: {
+        matPrimary: '#673ab7',
         matRed: '#f44336', // add more colors to the plugin
         matPink: '#e91e63',
         matPurple: '#9c27b0',

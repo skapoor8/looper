@@ -1,8 +1,8 @@
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { Injectable } from '@angular/core';
-import { IUser } from '@gcloud-function-api-auth/interfaces';
+import { IUser, UserRole } from '@gcloud-function-api-auth/interfaces';
 import { NGXLogger } from 'ngx-logger';
-import { catchError, defer, from, of, tap, throwError } from 'rxjs';
+import { catchError, defer, from, map, of, take, tap, throwError } from 'rxjs';
 import { UsersHttpService } from '../../http-services/users.http-service';
 import { DomainServiceUtils, ErrorUtils } from '../../shared';
 import { DataStore } from '../../stores';
@@ -17,6 +17,9 @@ export class UsersDomainService {
   // state -------------------------------------------------------------------------------------------------------------
   public users$ = this._dataStore.users$;
   public user$ = this._dataStore.user$;
+  public isAdmin$ = this._dataStore.user$.pipe(
+    map((user) => user.data?.role === UserRole.ADMIN)
+  );
   public authUser$ = this._auth.user;
 
   // lifecycle ---------------------------------------------------------------------------------------------------------
@@ -86,7 +89,8 @@ export class UsersDomainService {
                 ErrorUtils.chainError('getUsers failed', e)
               )
           );
-        })
+        }),
+        take(1)
       );
     });
   }
@@ -145,7 +149,9 @@ export class UsersDomainService {
       this._dataStore.setUser(DomainServiceUtils.createCompleteLoadable(found));
       this._logger.debug(
         'domain-services.users.selectUser: user selected =',
-        found
+        found,
+        'in dataStore:',
+        this._dataStore.getUser()
       );
     } else {
       this._dataStore.setUser(

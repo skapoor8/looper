@@ -1,4 +1,8 @@
-import { IElist, IElistNew } from '@gcloud-function-api-auth/interfaces';
+import {
+  IElist,
+  IElistNew,
+  IElistPreference,
+} from '@gcloud-function-api-auth/interfaces';
 import { IsDefined, MaxLength, IsNotEmpty } from 'class-validator';
 
 export class ElistNewModel implements IElistNew {
@@ -8,7 +12,7 @@ export class ElistNewModel implements IElistNew {
   })
   elistName: string;
 
-  settings?: object | undefined;
+  settings?: IElistPreference[] | undefined;
 
   defaultSettings?: object | undefined;
 

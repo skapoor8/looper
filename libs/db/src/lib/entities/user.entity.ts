@@ -42,6 +42,7 @@ export class UserEntity implements IUser {
   public role: UserRole = UserRole.USER;
 
   constructor(user: Partial<IUser>) {
+    // console.error('constructing user:', user);
     Object.assign(this, user);
   }
 

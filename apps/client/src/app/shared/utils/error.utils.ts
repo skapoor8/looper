@@ -14,7 +14,7 @@ export class ErrorUtils {
       return (
         `${message}\n\n` +
         '-- CAUSE --\n' +
-        `error: ${cause}\n` +
+        `error: ${JSON.stringify(cause)}\n` +
         '-- END --\n\n'
       );
     }

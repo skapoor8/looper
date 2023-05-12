@@ -1,4 +1,14 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { LooperUIPageComponent } from './../../../shared/components/page.component';
+import { IElistPreference } from '@gcloud-function-api-auth/interfaces';
+import { FormBuilderComponent } from './../../form-builder/components/form-builder.component';
+import {
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  HostBinding,
+  OnInit,
+  Output,
+} from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { ElistsPresenter } from '../presenters';
 import {
@@ -24,6 +34,8 @@ import {
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { ElistFormMode } from '../interfaces';
 import { NGXLogger } from 'ngx-logger';
+import { cloneDeep } from 'lodash-es';
+import { NotificationsService } from '../../../shared';
 
 @Component({
   standalone: true,
@@ -38,52 +50,44 @@ import { NGXLogger } from 'ngx-logger';
     MatFormFieldModule,
     MatInputModule,
     MatIconModule,
+    // looper ui
+    LooperUIPageComponent,
     // feature
     ElistsFormFieldErrorComponent,
+    FormBuilderComponent,
   ],
-  providers: [ElistsPresenter],
   selector: 'looper-elists-form',
   template: `
-    <!-- title + actions -->
-    <div class="flex flex-row items-center gap-2 pb-3 border-b">
-      <button
-        mat-icon-button
-        class="!h-9 !w-9 !p-[0.33rem]"
-        routerLink="/elists"
-      >
-        <i class="material-icons text-gray-500">chevron_left</i>
-      </button>
-      <span class="uppercase font-semibold flex-1 text-gray-500">
-        {{
-          (mode$ | async) === ElistFormMode.CREATE ? 'Add Elist' : 'Edit Elist'
-        }}
-      </span>
-      <button
-        mat-raised-button
-        color="primary"
-        [disabled]="!(elistForm?.valid && elistForm?.dirty)"
-        (click)="handleSave()"
-      >
-        Save
-      </button>
-    </div>
+    <!-- actions -->
+    <!-- <ng-container pageActionsRight>
+        <button
+          mat-raised-button
+          color="primary"
+          [disabled]="!(elistForm?.valid && elistForm?.dirty)"
+          (click)="handleSave()"
+        >
+          Save
+        </button>
+      </ng-container> -->
 
     <!-- create/edit form -->
-    <form *ngIf="elistForm" [formGroup]="elistForm" class="w-full">
+    <form pageMain *ngIf="elistForm" [formGroup]="elistForm" class="w-full">
       <mat-form-field appearance="fill" class="w-full">
         <mat-label>Elist Name</mat-label>
-        <input matInput formControlName="elistName" (change)="handleChange()" />
+        <input matInput formControlName="elistName" />
         <mat-error *ngIf="elistForm.controls['elistName'].invalid">
           <looper-elists-form-field-error
             [errors]="elistForm.controls['elistName'].errors"
           ></looper-elists-form-field-error>
         </mat-error>
       </mat-form-field>
+
+      <label class="flex text-xs text-matGrey-600 pl-3 pb-2">
+        Elist Settings
+      </label>
+      <form-builder #custom formControlName="settings"></form-builder>
     </form>
   `,
-  host: {
-    class: 'flex flex-col flex-1 gap-2 w-full p-4 bg-slate-100',
-  },
   styles: [
     `
       :host {
@@ -105,9 +109,16 @@ import { NGXLogger } from 'ngx-logger';
   ],
 })
 export class ElistsFormComponent implements OnInit {
+  @HostBinding('class')
+  _classes = 'flex flex-col flex-1 gap-2 w-full bg-slate-100';
+
+  @Output() hasChanges = new EventEmitter<boolean>(false);
+  @Output() isDirty = new EventEmitter<boolean>(false);
+
   // state -------------------------------------------------------------------------------------------------------------
 
   public elistForm?: ClassValidatorFormGroup;
+  public elistPreferences: IElistPreference[];
   public mode$ = this._presenter.mode$;
   private _mode: ElistFormMode;
   public userId$ = this._presenter.user$.pipe(map((u) => u?.data?.id));
@@ -123,6 +134,7 @@ export class ElistsFormComponent implements OnInit {
     private _logger: NGXLogger,
     private _fb: ClassValidatorFormBuilderService,
     private _presenter: ElistsPresenter,
+    private _notifications: NotificationsService,
     private _activeRoute: ActivatedRoute,
     private _cdr: ChangeDetectorRef
   ) {}
@@ -135,40 +147,46 @@ export class ElistsFormComponent implements OnInit {
     );
 
     // build form based on create/edit mode
-    const id = this._activeRoute.snapshot.paramMap.get('id');
-    if (id) {
-      this._presenter.setMode(ElistFormMode.EDIT);
-      this._presenter.userElists$.subscribe({
-        next: (elists) => {
-          const found = elists?.data?.find((list) => list.id === id);
-          if (found) {
+    this._presenter.selectedElist$
+      .pipe(
+        take(1),
+        map((sel) => cloneDeep(sel)) // avoid corrupting data in case of back
+      )
+      .subscribe({
+        next: (sel) => {
+          if (sel?.data) {
+            this._presenter.setMode(ElistFormMode.EDIT);
             this.elistForm = this._fb.group(ElistModel, {
-              id: found.id,
-              elistName: found.elistName,
-              ownerId: found.ownerId,
+              id: sel.data.id,
+              elistName: sel.data.elistName,
+              ownerId: sel.data.ownerId,
+              settings: { array: sel.data.settings ?? [] },
             });
           } else {
-            throwError(
-              () =>
-                new Error(`Attempting to edit non-existent elist with id ${id}`)
-            );
+            this._presenter.setMode(ElistFormMode.CREATE);
+            this.elistForm = this._fb.group(ElistNewModel, {
+              elistName: '',
+              ownerId: '',
+              settings: [],
+            });
+            // this.elistPreferences = [];
+
+            this._presenter.user$.pipe(take(1)).subscribe({
+              next: (u) => {
+                this.elistForm?.patchValue({ ownerId: u?.data?.id });
+                this._cdr.detectChanges();
+              },
+            });
           }
         },
       });
-    } else {
-      this._presenter.setMode(ElistFormMode.CREATE);
-      this.elistForm = this._fb.group(ElistNewModel, {
-        elistName: '',
-        ownerId: '',
-      });
 
-      this._presenter.user$.pipe(take(1)).subscribe({
-        next: (u) => {
-          this.elistForm?.patchValue({ ownerId: u?.data?.id });
-          this._cdr.detectChanges();
-        },
-      });
-    }
+    this.elistForm?.valueChanges.subscribe({
+      next: () => {
+        this.hasChanges.emit(this.elistForm?.valid ?? false);
+        this.isDirty.emit(this.elistForm?.dirty ?? false);
+      },
+    });
   }
 
   ngOnDestroy() {
@@ -177,21 +195,33 @@ export class ElistsFormComponent implements OnInit {
 
   // event handlers ----------------------------------------------------------------------------------------------------
   handleChange() {
-    this._logger.debug(
-      'elists.components.elist-form.handleChange: form =>',
-      this.elistForm
-    );
+    // this._logger.debug(
+    //   'elists.components.elist-form.handleChange: form =>',
+    //   this.elistForm
+    // );
+  }
+
+  handleFormDefinitionUpdate() {}
+
+  getRawValue() {
+    return this.elistForm?.getRawValue();
   }
 
   handleSave() {
-    this._logger.debug(
+    this._logger.info(
       'elists.components.elist-form.handleSave: saving',
       this.elistForm?.getRawValue()
     );
     if (this._mode === ElistFormMode.CREATE) {
-      this._presenter.createElist(this.elistForm?.getRawValue());
+      this._presenter.createElist(this.elistForm?.getRawValue()).subscribe({
+        next: () => this._notifications.success('Elist created'),
+        error: () => this._notifications.error('Elist could not be created'),
+      });
     } else {
-      this._presenter.updateElist(this.elistForm?.getRawValue());
+      this._presenter.updateElist(this.elistForm?.getRawValue()).subscribe({
+        next: () => this._notifications.success('Elist updated'),
+        error: () => this._notifications.error('Elist could not be update'),
+      });
     }
   }
 }

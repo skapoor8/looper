@@ -19,18 +19,36 @@ export class SubscriptionService {
     private readonly er: EntityRepository<SubscriptionEntity>
   ) {}
 
-  public async findAll(): Promise<SubscriptionEntity[]> {
-    return await this.er.findAll({
-      populate: ['elist'],
-      fields: ['*', 'elist.id', 'elist.elistName'],
-    });
+  public async findAll(args?: {
+    email?: string;
+  }): Promise<SubscriptionEntity[]> {
+    if (args) {
+      const { email } = args;
+      return await this.er.find(
+        {
+          email,
+        },
+        {
+          populate: ['elist'],
+          // fields: ['*', 'elist.id', 'elist.elistName'],
+          fields: ['*', { elist: ['id', 'elistName'] }],
+        }
+      );
+    } else {
+      return await this.er.findAll({
+        populate: ['elist'],
+        // fields: ['*', 'elist.id', 'elist.elistName'],
+        fields: ['*', { elist: ['id', 'elistName'] }],
+      });
+    }
   }
 
-  public async findOne(uuid: string) {
-    return await this.er.findOne(uuid, {
+  public async findOne(uuid: string): Promise<SubscriptionEntity | null> {
+    const ent = await this.er.findOne(uuid, {
       populate: ['elist'],
       fields: ['*', 'elist.id', 'elist.elistName'],
     });
+    return ent;
   }
 
   public async createOne(aSub: Omit<ISubscription, 'id'>) {
@@ -45,12 +63,16 @@ export class SubscriptionService {
    */
   public async updateOne(uuid: string, aSub: Omit<ISubscription, 'id'>) {
     const toUpdate = await this.er.findOneOrFail(uuid);
-    wrap(toUpdate).assign(aSub);
-    await this.er.persistAndFlush(toUpdate);
+    wrap(toUpdate).assign({ ...aSub });
+    await this.er.flush();
   }
 
   public async deleteOne(uuid: string) {
     const ref = this.er.getReference(uuid);
     await this.er.removeAndFlush(ref);
+  }
+
+  public async findByElistId(id: string): Promise<SubscriptionEntity[]> {
+    return await this.er.find({ elist: { id } });
   }
 }

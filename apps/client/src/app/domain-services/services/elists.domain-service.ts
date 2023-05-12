@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { IElist, IElistNew } from '@gcloud-function-api-auth/interfaces';
 import { NGXLogger } from 'ngx-logger';
-import { catchError, delay, tap, throwError } from 'rxjs';
+import { catchError, delay, take, tap, throwError } from 'rxjs';
 import { ElistsHttpService, UsersHttpService } from '../../http-services';
 import { DomainServiceUtils, ErrorUtils } from '../../shared';
 import { DataStore } from '../../stores';
@@ -15,6 +15,7 @@ import {
 export class ElistsDomainService {
   // state -------------------------------------------------------------------------------------------------------------
   public userElists$ = this._dataStore.userElists$;
+  public selectedElist$ = this._dataStore.elist$;
 
   // lifecycle ---------------------------------------------------------------------------------------------------------
   constructor(
@@ -31,6 +32,22 @@ export class ElistsDomainService {
 
   public unload() {
     this._dataStore.setUserElists(DomainServiceUtils.createIdleLoadable([]));
+  }
+
+  public selectElist(id: string) {
+    const elists = this._dataStore.getElists()?.data;
+    const selected = elists.find((e) => e.id === id);
+    if (selected) {
+      this._dataStore.setElist(
+        DomainServiceUtils.createCompleteLoadable(selected)
+      );
+    } else {
+      throw new Error(`Selecting elist with unloaded id ${id}`);
+    }
+  }
+
+  public deselectElist() {
+    this._dataStore.setElist(DomainServiceUtils.createIdleLoadable(null));
   }
 
   /**
@@ -82,8 +99,13 @@ export class ElistsDomainService {
               ErrorUtils.chainError('getElistsForUser failed', e)
             )
         );
-      })
+      }),
+      take(1)
     );
+  }
+
+  public getElistById(id: string) {
+    return this._elistsHttpService.getElistById(id);
   }
 
   public createElist(anElist: IElistNew) {

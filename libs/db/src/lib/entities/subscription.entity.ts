@@ -36,10 +36,17 @@ export class SubscriptionEntity implements Omit<ISubscription, 'elistId'> {
   @Property({ fieldName: 'phone_country_code', length: 10 })
   public phoneCountryCode?: string;
 
-  @Property({ fieldName: 'user_did_consent', columnType: 'BOOLEAN' })
+  @Property({
+    fieldName: 'user_did_consent',
+    columnType: 'BOOLEAN',
+    type: 'boolean',
+  })
   public userDidConsent = false;
 
-  @Property({ columnType: 'JSON' })
+  @Property({ fieldName: 'is_active', columnType: 'BOOLEAN', type: 'boolean' })
+  public isActive = true;
+
+  @Property({ columnType: 'JSON', type: 'json' })
   public settings?: object;
 
   @ManyToOne({
@@ -69,6 +76,8 @@ export class SubscriptionEntity implements Omit<ISubscription, 'elistId'> {
       obj.elistId = this.elist.id;
       delete obj.elist;
     }
+
+    obj.userDidConsent = !!obj.userDidConsent;
 
     return obj;
   }

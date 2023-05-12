@@ -13,7 +13,7 @@ main();
 
 async function main() {
   try {
-    console.log('__dirname:', __dirname);
+    // console.log('__dirname:', __dirname);
     config({
       path: path.join(__dirname, 'environments', '.env'),
     });
@@ -21,7 +21,7 @@ async function main() {
     //   't2ECDOlh82PQB7SWq8JCYygIEI13',
     //   'AIzaSyBT2glrwdnRZecAtYskU4ckxNk62tRYjAU'
     // );
-    console.log('looper api key', process.env.LOOPER_API_KEY);
+    // console.log('looper api key', process.env.LOOPER_API_KEY);
     const json = await new Promise((resolve, reject) => {
       get(
         {
@@ -54,7 +54,7 @@ async function main() {
         }
       );
     });
-    console.log('json:', json);
+    // console.log('json:', json);
     // // add custom claims - id, role
     // return {
     //   customClaims: {
@@ -100,11 +100,11 @@ async function main() {
 // }
 
 async function getIdTokenForServiceAccount() {
-  console.log('__dirname', __dirname);
+  // console.log('__dirname', __dirname);
   config({
     path: path.join(__dirname, 'environments', '.env'),
   });
-  console.log('GAC:', process.env['GOOGLE_APPLICATION_CREDENTIALS']);
+  // console.log('GAC:', process.env['GOOGLE_APPLICATION_CREDENTIALS']);
   const auth = new GoogleAuth();
   const url = `http://localhost:8080/users/`;
   const targetAudience = `https://func-looper-xbr2k3vaja-uc.a.run.app`;

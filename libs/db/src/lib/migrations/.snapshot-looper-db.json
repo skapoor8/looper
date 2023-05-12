@@ -9,7 +9,8 @@
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
-          "nullable": false
+          "nullable": false,
+          "mappedType": "unknown"
         },
         "uid": {
           "name": "uid",
@@ -144,7 +145,8 @@
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
-          "nullable": false
+          "nullable": false,
+          "mappedType": "unknown"
         },
         "elist_name": {
           "name": "elist_name",
@@ -180,7 +182,8 @@
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
-          "nullable": false
+          "nullable": false,
+          "mappedType": "unknown"
         }
       },
       "name": "elists",
@@ -238,7 +241,8 @@
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
-          "nullable": false
+          "nullable": false,
+          "mappedType": "unknown"
         },
         "first_name": {
           "name": "first_name",
@@ -307,6 +311,15 @@
           "nullable": false,
           "mappedType": "boolean"
         },
+        "is_active": {
+          "name": "is_active",
+          "type": "BOOLEAN",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "boolean"
+        },
         "settings": {
           "name": "settings",
           "type": "JSON",
@@ -322,7 +335,8 @@
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
-          "nullable": false
+          "nullable": false,
+          "mappedType": "unknown"
         }
       },
       "name": "subscriptions",

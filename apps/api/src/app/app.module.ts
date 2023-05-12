@@ -34,12 +34,12 @@ import { AuthMiddleware } from './middleware/auth.middleware';
     }),
     MikroOrmModule.forRootAsync({
       useFactory: async (config: ConfigService) => {
-        console.log(
-          'config:',
-          config.get('MYSQL_DB_ENDPOINT'),
-          config.get('MYSQL_USERNAME'),
-          config.get('MYSQL_PASSWORD')
-        );
+        // console.log(
+        //   'config:',
+        //   config.get('MYSQL_DB_ENDPOINT'),
+        //   config.get('MYSQL_USERNAME'),
+        //   config.get('MYSQL_PASSWORD')
+        // );
         return {
           debug: true,
           type: 'mysql',

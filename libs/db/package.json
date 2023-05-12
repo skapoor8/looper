@@ -13,6 +13,7 @@
     "db:migration:initial": "npx mikro-orm migration:create --initial",
     "db:migration:create": "npx mikro-orm migration:create",
     "db:migration:up": "npx mikro-orm migration:up",
+    "db:migration:up:prod": "MIKRO_ORM_CLI=./mikro-orm.prod.config.ts npm run db:migration:up",
     "db:migration:down": "npx mikro-orm migration:down",
     "db:migration:list": "npx mikro-orm migration:list",
     "db:export": "./scripts/export.sh",

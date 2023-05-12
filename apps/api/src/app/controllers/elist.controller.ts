@@ -8,16 +8,24 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
-import { ElistService, UserService } from '@gcloud-function-api-auth/db';
+import {
+  ElistService,
+  UserService,
+  SubscriptionService,
+} from '@gcloud-function-api-auth/db';
 import {
   IElist,
   IElistWithOwnerInfoDTO,
   IUser,
 } from '@gcloud-function-api-auth/interfaces';
+import { Public } from '../decorators/public.decorator';
 
 @Controller('elists')
 export class ElistController {
-  constructor(private readonly elistService: ElistService) {}
+  constructor(
+    private readonly elistService: ElistService,
+    private readonly subscriptionService: SubscriptionService
+  ) {}
 
   @Get()
   public async index(): Promise<IElistWithOwnerInfoDTO[]> {
@@ -29,6 +37,7 @@ export class ElistController {
     }
   }
 
+  @Public()
   @Get('/:id')
   public async read(@Param('id') id) {
     try {
@@ -39,9 +48,18 @@ export class ElistController {
     }
   }
 
+  @Get('/:id/subscriptions')
+  public async getSubscriptions(@Param('id') elistId: string) {
+    try {
+      return await this.subscriptionService.findByElistId(elistId);
+    } catch (e) {
+      console.error(e);
+      throw new BadRequestException(e);
+    }
+  }
+
   @Post()
   public async create(@Body() body: Omit<IElist, 'id'>) {
-    console.log('body:', body);
     try {
       return await this.elistService.createOne(body);
     } catch (e) {
@@ -52,8 +70,6 @@ export class ElistController {
 
   @Put('/:id')
   public async update(@Param('id') id: string, @Body() body: IElist) {
-    console.log('body:', body);
-
     if (id !== body.id) {
       throw new BadRequestException('id in request body does not match route');
     }

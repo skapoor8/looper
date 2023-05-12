@@ -11,7 +11,7 @@ import {
   Unique,
   wrap,
 } from '@mikro-orm/core';
-import { IElist } from '@gcloud-function-api-auth/interfaces';
+import { IElist, IElistPreference } from '@gcloud-function-api-auth/interfaces';
 import { UserEntity } from './user.entity';
 import { UuidType } from '../custom-types';
 import { parse, v4 } from 'uuid';
@@ -25,13 +25,14 @@ export class ElistEntity implements Omit<IElist, 'ownerId'> {
   @Property({ fieldName: 'elist_name', length: 255 })
   public elistName!: string;
 
-  @Property({ columnType: 'JSON', nullable: true })
-  public settings?: object;
+  @Property({ columnType: 'JSON', nullable: true, type: 'json' })
+  public settings?: IElistPreference[];
 
   @Property({
     fieldName: 'default_settings',
     columnType: 'JSON',
     nullable: true,
+    type: 'json',
   })
   public defaultSettings?: object;
 

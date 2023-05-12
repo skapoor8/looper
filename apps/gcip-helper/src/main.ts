@@ -14,14 +14,14 @@ exports.beforeCreate = authClient
 exports.beforeSignIn = authClient
   .functions()
   .beforeSignInHandler(async (user, context) => {
-    console.log(
-      'user:',
-      user,
-      'context',
-      context,
-      'env:',
-      process.env.API_ENDPOINT
-    );
+    // console.log(
+    //   'user:',
+    //   user,
+    //   'context',
+    //   context,
+    //   'env:',
+    //   process.env.API_ENDPOINT
+    // );
     // get user from api
 
     try {
@@ -54,7 +54,7 @@ exports.beforeSignIn = authClient
           }
         );
       });
-      console.log('json:', json);
+      // console.log('json:', json);
       // add custom claims - id, role
       return {
         customClaims: {

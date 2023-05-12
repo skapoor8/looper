@@ -4,12 +4,11 @@ import { MatSelectModule } from '@angular/material/select';
 import { IUser } from '@gcloud-function-api-auth/interfaces';
 import { catchError, throwError } from 'rxjs';
 import { UsersDomainService } from '../../../domain-services';
-import { DomainServicesModule } from '../../../domain-services';
 import { UsersPresenter } from '../presenters/users.presenter';
 
 @Component({
   standalone: true,
-  imports: [MatSelectModule, DomainServicesModule, CommonModule],
+  imports: [MatSelectModule, CommonModule],
   providers: [UsersPresenter],
   selector: 'looper-user-selector',
   template: `

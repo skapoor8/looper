@@ -1,6 +1,10 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { IElist, IUser } from '@gcloud-function-api-auth/interfaces';
+import {
+  IElist,
+  ISubscription,
+  IUser,
+} from '@gcloud-function-api-auth/interfaces';
 import { IDomainServiceLoadable } from '../domain-services';
 import { DomainServiceUtils } from '../shared';
 
@@ -31,6 +35,16 @@ export class DataStore {
   /** user's elists (observable) */
   public userElists$ = this._userElists$.asObservable();
 
+  private _elist$ = new BehaviorSubject<IDomainServiceLoadable<IElist, null>>(
+    DomainServiceUtils.createIdleLoadable(null)
+  );
+  public elist$ = this._elist$.asObservable();
+
+  private _elistSubscriptions$ = new BehaviorSubject<
+    IDomainServiceLoadable<ISubscription[], []>
+  >(DomainServiceUtils.createIdleLoadable([]));
+  public elistSubscriptions$ = this._elistSubscriptions$.asObservable();
+
   // setters -------------------------------------------------------------------
 
   public setUsers(users: IDomainServiceLoadable<IUser[], []>) {
@@ -45,6 +59,16 @@ export class DataStore {
     this._userElists$.next(elists);
   }
 
+  public setElist(elist: IDomainServiceLoadable<IElist, null>) {
+    this._elist$.next(elist);
+  }
+
+  public setElistSubscriptions(
+    subs: IDomainServiceLoadable<ISubscription[], []>
+  ) {
+    this._elistSubscriptions$.next(subs);
+  }
+
   // getters -------------------------------------------------------------------
 
   public getUsers() {
@@ -57,5 +81,13 @@ export class DataStore {
 
   public getElists() {
     return this._userElists$.getValue();
+  }
+
+  public getElist() {
+    return this._elist$.getValue();
+  }
+
+  public getElistSubscriptions() {
+    return this._elistSubscriptions$.getValue();
   }
 }
