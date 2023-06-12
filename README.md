@@ -4,17 +4,41 @@ An elist management app with a form builder for making customizable user prefere
 
 ## Features
 
-### Create elists and view subscribers
+### Create elists
+
+![image](/readme_images/crud-elists.png)
+
+### View and manage subscribers
+
+![image](/readme_images/manage-subscribers.png)
 
 ### Build a custom user preferences form for every elist
 
+![image](/readme_images/custom-settings.png)
+
 ### Users can sign up at a public url
+
+![image](/readme_images/subscribe.png)
+
+### Self-service portal for users
+
+![image](/readme_images/self-service-portal.png)
+
+### Users can find their subscriptions in the self-service portal using their email
+
+![image](/readme_images/self-service-find.png)
 
 ### Users can manage their own preferences at the self service portal
 
+![image](/readme_images/self-service-update.png)
+
 ### Users can unsubscribe and re-subscribe at will
 
+![image](/readme_images/self-service-unsubscribe.png)
+
 ### Secured with authentication
+
+![image](/readme_images/auth.png)
 
 ## Implementation
 
@@ -22,7 +46,7 @@ An elist management app with a form builder for making customizable user prefere
 2. Data is stored in a MySQL database using Google CloudSQL for MySQL. I chose a relational database to be able to support granular analytics operations for elists.
 3. MikroORM used for modeling domain entities, handling transactions and query building. I chose Mikro for it's first class TypeScript support, and since it exposes a knex like query builder for highly flexible queries.
 4. Backend architecture is split into Entities, Controllers for organization
-5. API is hosted as gen 2 GCP Cloud Function
+5. API is hosted as a gen 2 GCP Cloud Function
 6. Front-end is build in angular, and served with firebase
 7. UI library used is Angular Material. I use prime-ng most frequently and wanted to try out angular material's API.
 8. Front-end architecture is layered
@@ -47,4 +71,6 @@ Overall, my feeling is that the isomorphic TypeScript stack gives you a great bo
 
 - Experiment with micro-frontends to see how looper can be embedded into other peoples' websites and projects
 - Make the theme and appearance of public elist pages / self-service portal more customizable
+- Adding analytics for elists (new subscribes/unsubscribes, etc.)
+- Adding email campaigns for elists
 - Added static asset hosting with Google Cloud Storage

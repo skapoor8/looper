@@ -14,14 +14,14 @@ exports.beforeCreate = authClient
 exports.beforeSignIn = authClient
   .functions()
   .beforeSignInHandler(async (user, context) => {
-    // console.log(
-    //   'user:',
-    //   user,
-    //   'context',
-    //   context,
-    //   'env:',
-    //   process.env.API_ENDPOINT
-    // );
+    console.log(
+      'user:',
+      user,
+      'context',
+      context,
+      'env:',
+      process.env.API_ENDPOINT
+    );
     // get user from api
 
     try {
@@ -43,6 +43,7 @@ exports.beforeSignIn = authClient
 
             res.on('end', () => {
               try {
+                console.log('got user from api:', body);
                 let json = JSON.parse(body);
                 // do something with JSON
                 resolve(json);
