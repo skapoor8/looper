@@ -51,15 +51,15 @@ An elist management app with a form builder for making customizable user prefere
 7. UI library used is Angular Material. I use prime-ng most frequently and wanted to try out angular material's API.
 8. Front-end architecture is layered
 
-- HttpServices are where network interactions happen
-- Stores are injectable singleton services that share global state data
-- DomainServices contain all operations on domain data, and are the points of access for it for the UI
-- Presenters host any complex ui logic, state and view models that may need to be shared between components
-- Components are merely responsible for rendering ui and registering event handlers
-- Class-transformer and class-validator are used to transform shared data contracts into model classes, and to validate them
+   - HttpServices are where network interactions happen
+   - Stores are injectable singleton services that share global state data
+   - DomainServices contain all operations on domain data, and are the points of access for it for the UI
+   - Presenters host any complex ui logic, state and view models that may need to be shared between components
+   - Components are merely responsible for rendering ui and registering event handlers
+   - Class-transformer and class-validator are used to transform shared data contracts into model classes, and to validate them
 
-8. Form builder is implemented with Angular Reactive Forms using the ngx-reactive-form-class-validator and with custom form controls
-9. Project is organized as a monorepo with shared interfaces using Nx
+9. Form builder is implemented with Angular Reactive Forms using the ngx-reactive-form-class-validator and with custom form controls
+10. Project is organized as a monorepo with shared interfaces using Nx
 
 ## Motivation
 
